@@ -1,5 +1,5 @@
-// Bei jeder Änderung an der App die Versionsnummer erhöhen (v6 -> v7 ...)
-const CACHE = 'kochbuch-v6';
+// Bei jeder Änderung an der App die Versionsnummer erhöhen (v7 -> v8 ...)
+const CACHE = 'kochbuch-v7';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

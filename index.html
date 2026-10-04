@@ -97,6 +97,17 @@ h1{font-size:1.9rem;line-height:1.15;font-weight:700;margin:22px 0 18px;letter-s
 .hsl input{display:block;width:100%;border:0;background:none;text-align:center;font-size:1.1rem;font-weight:600;color:var(--ink);outline:0;padding:0}
 .rcs{display:flex;gap:10px;margin-top:8px}.rcs button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line)}
 .csw{width:44px;height:32px;border-radius:8px;border:1px solid var(--line)}
+/* Text bleibt in festen Boxen: feste Höhe, Überlänge wird abgeschnitten */
+body{overflow-wrap:anywhere}.wrap{overflow-x:clip}
+.rc b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;height:2.5em;line-height:1.25}
+.rc small{display:block;height:1.4em;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc .t{height:5.4em;overflow:hidden}
+.cats{grid-template-columns:repeat(4,minmax(0,1fr))}.ct span{display:block;height:1.3em;line-height:1.3}
+.stats>div{min-width:0}.sv{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;height:2.6em;line-height:1.3}
+.top{gap:10px}.who{min-width:0}.who span:last-child{min-width:0;max-width:52vw;height:1.5em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thb span:nth-child(2){min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cook .row>b{display:block;min-width:0;max-width:60%;height:1.5em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cook p{overflow-y:auto;max-height:100%}
 </style>
 </head>
 <body>
@@ -241,7 +252,7 @@ function detail(){
   return`<div class="wrap"><div class="top"><button class="round" data-a="back" aria-label="Zurück">${ic('back')}</button><b>Rezept</b><button class="round" data-a="fav" aria-label="Favorit" style="color:var(--red)">${ic('heart',r.fav)}</button></div>
   <h1 style="margin:18px 0 0">${esc(r.title)}</h1>
   ${hero(r)}
-  <div class="stats"><div><small>Portionen</small>${r.serv?`<span class="step"><button data-a="srv" data-d="-1" aria-label="Weniger">−</button>${S.serv}<button data-a="srv" data-d="1" aria-label="Mehr">+</button></span>`:'–'}</div><div><small>Zeit</small>${r.time?esc(r.time)+' Min.':'–'}</div><div><small>Kategorie</small>${esc(r.cat)}</div></div>
+  <div class="stats"><div><small>Portionen</small>${r.serv?`<span class="step"><button data-a="srv" data-d="-1" aria-label="Weniger">−</button>${S.serv}<button data-a="srv" data-d="1" aria-label="Mehr">+</button></span>`:'–'}</div><div><small>Zeit</small>${r.time?esc(r.time)+' Min.':'–'}</div><div><small>Kategorie</small><span class="sv">${esc(r.cat)}</span></div></div>
   <div class="acc">${hd('i','Zutaten')}${ac.i?`<div class="ab"><ul class="ing">${r.ing.map(i=>`<li><label><input type="checkbox"><span>${inl(sc(i,f))}</span></label></li>`).join('')||'<li class="mut">Keine Zutaten</li>'}</ul></div>`:''}</div>
   <div class="acc dir ${ac.d?'open':''}">${hd('d','Zubereitung')}${ac.d?`<div class="ab"><ol class="st">${r.steps.map(s=>`<li>${inl(s)}</li>`).join('')||'<li class="mut">Keine Schritte</li>'}</ol>${r.notes?`<p class="mut" style="white-space:pre-wrap">${inl(r.notes)}</p>`:''}${r.steps.length?'<button class="btn" data-a="cook" style="margin-top:8px">Kochen starten</button>':''}</div>`:''}</div>
   <div class="row" style="margin-top:16px"><button class="btn alt" data-a="toshop">Einkaufsliste</button><button class="btn alt" data-a="edit">Bearbeiten</button><button class="btn alt" data-a="md">Markdown bearbeiten</button><button class="btn alt" data-a="del">Löschen</button></div></div>`}
@@ -459,7 +470,7 @@ function settings(){
   <div class="acc"><div class="ab" style="padding-top:16px"><h2>Dein Name</h2><input class="in" id="s-n" aria-label="Name" value="${esc(n)}" placeholder="Name für die Begrüßung"></div></div>
   <div class="acc"><div class="ab" style="padding-top:16px"><h2>Rezepte</h2><div class="row"><button class="btn alt" data-a="mdnew">Aus Markdown erstellen</button><button class="btn alt" data-a="imp">Importieren</button><button class="btn alt" data-a="exp">Alle exportieren</button></div></div></div>
   <div class="acc"><div class="ab" style="padding-top:16px"><h2>Prompt für perfektes Markdown</h2><p class="mut" style="margin-top:0">Schicke diesen Prompt nach dem Erstellen eines Rezepts an Claude. Die Antwort fügst du über „Aus Markdown erstellen“ ein.</p><textarea readonly rows="10" aria-label="Prompt" style="font-size:.85rem">${esc(PROMPT)}</textarea><button class="btn lime" data-a="cpp" style="margin-top:10px">Prompt kopieren</button></div></div>
-  <p class="mut" style="text-align:center;margin:18px 0 0">Version 6 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
+  <p class="mut" style="text-align:center;margin:18px 0 0">Version 7 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
 document.addEventListener('keydown',e=>{if(S.v!=='cook')return;if(e.key==='ArrowRight')document.querySelector('[data-a=next]').click();if(e.key==='ArrowLeft')document.querySelector('[data-a=prev]').click();if(e.key==='Escape')document.querySelector('[data-a=endcook]').click()});
 /* Zurück-Taste: App-Navigation mit dem Browser-Verlauf synchron halten */
 let CUR=0;
