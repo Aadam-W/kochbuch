@@ -255,6 +255,7 @@ function render(){if(S.v!=='settings'&&S.dr){S.dr=null;S.dn='';applyTheme()}
   $('#app').innerHTML=({home,detail,cook,form,shop,settings})[S.v]();
   if(S.v==='home'){list();$('#q').addEventListener('input',e=>{S.q=e.target.value;list()})}
   if(S.v!=='cook')window.scrollTo(0,0);
+  reconcile();
 }
 
 /* ---------- Modal ---------- */
@@ -408,6 +409,16 @@ function settings(){
   <div class="acc"><div class="ab" style="padding-top:16px"><h2>Rezepte</h2><div class="row"><button class="btn alt" data-a="mdnew">Aus Markdown erstellen</button><button class="btn alt" data-a="imp">Importieren</button><button class="btn alt" data-a="exp">Alle exportieren</button></div></div></div>
   <div class="acc"><div class="ab" style="padding-top:16px"><h2>Prompt für perfektes Markdown</h2><p class="mut" style="margin-top:0">Schicke diesen Prompt nach dem Erstellen eines Rezepts an Claude. Die Antwort fügst du über „Aus Markdown erstellen“ ein.</p><textarea readonly rows="10" aria-label="Prompt" style="font-size:.85rem">${esc(PROMPT)}</textarea><button class="btn lime" data-a="cpp" style="margin-top:10px">Prompt kopieren</button></div></div></div>${nav()}`}
 document.addEventListener('keydown',e=>{if(S.v!=='cook')return;if(e.key==='ArrowRight')document.querySelector('[data-a=next]').click();if(e.key==='ArrowLeft')document.querySelector('[data-a=prev]').click();if(e.key==='Escape')document.querySelector('[data-a=endcook]').click()});
+/* Zurück-Taste: App-Navigation mit dem Browser-Verlauf synchron halten */
+let CUR=0;
+const level=()=>S.v==='home'?0:S.v==='cook'?2:S.v==='form'?(S.id?2:1):1;
+const ovs=()=>document.querySelectorAll('.ov,.car');
+function reconcile(){const want=level()+ovs().length;if(want===CUR)return;try{if(want>CUR){for(let i=CUR+1;i<=want;i++)history.pushState({d:i},'')}else history.go(want-CUR)}catch(e){}CUR=want}
+try{history.replaceState({d:0},'')}catch(e){}
+addEventListener('popstate',e=>{const d=(e.state&&e.state.d)||0;if(d===CUR)return;CUR=d;const o=ovs();if(o.length){o[o.length-1].remove();return}
+  if(d===0)S.v='home';else if(S.v==='cook'||S.v==='form')S.v=S.id?'detail':'home';
+  render()});
+new MutationObserver(reconcile).observe(document.body,{childList:true});
 applyTheme();render();
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script>
