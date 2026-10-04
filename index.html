@@ -297,7 +297,7 @@ document.addEventListener('click',e=>{
   else if(a==='clrall'){SL=[];save()}
   else if(a==='del'){return ask('Dieses Rezept wirklich löschen?','Löschen',()=>{R=R.filter(x=>x.id!==S.id);delete IMG[S.id];save();S.v='home';S.id=null;render();toast('Gelöscht')})}
   else if(a==='md'){modal(r.title,r.md,{ok:'Änderungen speichern',hint:'Du kannst das Rezept hier direkt als Markdown bearbeiten.',dl:r.title.replace(/[^\wäöüß-]+/g,'_')+'.md',onok:(v,close)=>{R.find(x=>x.id===S.id).md=build(parse(v));save();close();render();toast('Gespeichert')}});return}
-  else if(a==='imp'){return mdImport('')}else if(a==='mdnew'){return mdImport()}else if(a==='exp'){return exportAll()}else if(a==='cpp'){return copy(PROMPT)}else if(/^th[a-z]+$/.test(a)){return themeAct(a,t)}else if(a==='rmimg'){S.pimgs=S.pimgs!==undefined?S.pimgs:[...imgs(S.id)];S.pimgs.splice(+t.dataset.i,1);$('#imgp').innerHTML=thumbs();return}else if(a==='gal'){return openGal(S.id)}
+  else if(a==='imp'){return mdImport('')}else if(a==='mdnew'){return mdImport()}else if(a==='exp'){return exportAll()}else if(a==='cpp'){return copy(PROMPT)}else if(a==='upd'){return upd()}else if(/^th[a-z]+$/.test(a)){return themeAct(a,t)}else if(a==='rmimg'){S.pimgs=S.pimgs!==undefined?S.pimgs:[...imgs(S.id)];S.pimgs.splice(+t.dataset.i,1);$('#imgp').innerHTML=thumbs();return}else if(a==='gal'){return openGal(S.id)}
   else if(a==='save'){
     const g=i=>$('#'+i).value.trim(),title=g('f-t');if(!title){toast('Bitte einen Titel eingeben');return}
     const lines=v=>v.split('\n').map(x=>x.replace(/^\s*([-*]|\d+[.)])\s+/,'').trim()).filter(Boolean);
@@ -307,6 +307,7 @@ document.addEventListener('click',e=>{
   render();
 });
 function nav2(){}
+async function upd(){toast('Suche nach Updates …');try{for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();for(const k of await caches.keys())await caches.delete(k)}catch(e){}setTimeout(()=>location.reload(),500)}
 function copy(v){const fb=()=>{const t=document.createElement('textarea');t.value=v;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}t.remove();toast(ok?'Kopiert':'Bitte Text markieren und kopieren')};try{navigator.clipboard.writeText(v).then(()=>toast('Kopiert'),fb)}catch(e){fb()}}
 function ask(msg,ok,fn){const d=document.createElement('div');d.className='ov';d.innerHTML=`<div class="md" role="alertdialog" aria-label="${esc(msg)}"><h2>${esc(msg)}</h2><div class="row"><button class="btn" id="ay">${esc(ok)}</button><button class="btn alt" id="an">Abbrechen</button></div></div>`;document.body.appendChild(d);d.querySelector('#an').onclick=()=>d.remove();d.querySelector('#ay').onclick=()=>{d.remove();fn()};d.onclick=e=>{if(e.target===d)d.remove()}}
 const shrink=f=>new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.75))};im.onerror=rej;im.src=fr.result};fr.onerror=rej;fr.readAsDataURL(f)});
@@ -407,7 +408,8 @@ function settings(){
   ${themeUI()}
   <div class="acc"><div class="ab" style="padding-top:16px"><h2>Dein Name</h2><input class="in" id="s-n" aria-label="Name" value="${esc(n)}" placeholder="Name für die Begrüßung"></div></div>
   <div class="acc"><div class="ab" style="padding-top:16px"><h2>Rezepte</h2><div class="row"><button class="btn alt" data-a="mdnew">Aus Markdown erstellen</button><button class="btn alt" data-a="imp">Importieren</button><button class="btn alt" data-a="exp">Alle exportieren</button></div></div></div>
-  <div class="acc"><div class="ab" style="padding-top:16px"><h2>Prompt für perfektes Markdown</h2><p class="mut" style="margin-top:0">Schicke diesen Prompt nach dem Erstellen eines Rezepts an Claude. Die Antwort fügst du über „Aus Markdown erstellen“ ein.</p><textarea readonly rows="10" aria-label="Prompt" style="font-size:.85rem">${esc(PROMPT)}</textarea><button class="btn lime" data-a="cpp" style="margin-top:10px">Prompt kopieren</button></div></div></div>${nav()}`}
+  <div class="acc"><div class="ab" style="padding-top:16px"><h2>Prompt für perfektes Markdown</h2><p class="mut" style="margin-top:0">Schicke diesen Prompt nach dem Erstellen eines Rezepts an Claude. Die Antwort fügst du über „Aus Markdown erstellen“ ein.</p><textarea readonly rows="10" aria-label="Prompt" style="font-size:.85rem">${esc(PROMPT)}</textarea><button class="btn lime" data-a="cpp" style="margin-top:10px">Prompt kopieren</button></div></div>
+  <p class="mut" style="text-align:center;margin:18px 0 0">Version 5 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
 document.addEventListener('keydown',e=>{if(S.v!=='cook')return;if(e.key==='ArrowRight')document.querySelector('[data-a=next]').click();if(e.key==='ArrowLeft')document.querySelector('[data-a=prev]').click();if(e.key==='Escape')document.querySelector('[data-a=endcook]').click()});
 /* Zurück-Taste: App-Navigation mit dem Browser-Verlauf synchron halten */
 let CUR=0;
