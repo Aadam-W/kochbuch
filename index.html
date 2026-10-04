@@ -85,6 +85,18 @@ h1{font-size:1.9rem;line-height:1.15;font-weight:700;margin:22px 0 18px;letter-s
 .thb{flex:1;display:flex;gap:12px;align-items:center;padding:10px 12px;text-align:left;min-width:0}.thb small{margin-left:auto;color:var(--mut)}.thx{width:40px;height:40px;font-size:1.3rem}
 .sws{display:flex}.sws i{width:18px;height:18px;border-radius:50%;border:1px solid var(--line);margin-left:-5px}.sws i:first-child{margin-left:0}
 .cr{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}.cr span{flex:1}.cr input[type=color]{width:44px;height:32px;border:1px solid var(--line);border-radius:8px;padding:2px;background:var(--card);cursor:pointer}.cr code{width:64px;font-size:.8rem;color:var(--mut)}
+.cpo{background:color-mix(in srgb,var(--shade) 18%,transparent)}.cp{max-width:340px}
+.wh{position:relative;width:220px;height:220px;margin:14px auto;touch-action:none;cursor:crosshair;border-radius:50%}.wh canvas{display:block}
+.wh i{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 1.5px var(--ink);pointer-events:none}
+.hx{display:flex;gap:8px;align-items:center;justify-content:center}.hx input{width:110px;text-align:center;text-transform:uppercase;padding:9px}
+.sqb{width:40px;height:40px;border-radius:10px;background:var(--line);display:grid;place-items:center}
+.cpr{-webkit-appearance:none;appearance:none;width:100%;height:14px;border-radius:99px;margin:16px 0;border:1px solid var(--line)}
+.cpr::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--card);border:2px solid var(--ink);cursor:pointer}
+.cpr::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--card);border:2px solid var(--ink);cursor:pointer}
+.hsl{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.hsl label{text-align:center;border:1px solid var(--line);border-radius:14px;padding:8px 4px;background:var(--card);font-size:.8rem;color:var(--mut)}
+.hsl input{display:block;width:100%;border:0;background:none;text-align:center;font-size:1.1rem;font-weight:600;color:var(--ink);outline:0;padding:0}
+.rcs{display:flex;gap:10px;margin-top:8px}.rcs button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line)}
+.csw{width:44px;height:32px;border-radius:8px;border:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -194,7 +206,7 @@ const all=()=>R.map(r=>({id:r.id,md:r.md,...parse(r.md)}));
 function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),1800)}
 
 /* ---------- Views ---------- */
-const P={gear:'<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',heart:'<path d="M12 20.5C5 16 3 12.5 3 9.5a4.500 4.500 0 0 1 9-2 4.500 4.500 0 0 1 9 2c0 3-2 6.500-9 11z"/>',list:'<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>',plus:'<path d="M12 5v14M5 12h14"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',back:'<path d="M15 5l-7 7 7 7"/>',chev:'<path d="M6 9l6 6 6-6"/>',dl:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',bowl:'<path d="M3 11h18a9 9 0 0 1-18 0zM8 5c0 2 2 2 2 4M13 4c0 2 2 2 2 5"/>',cup:'<path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2 2 0 0 1 0 4h-2"/>',cake:'<path d="M4 20h16v-6H4zM7 14V9h10v5M12 9V5"/>',leaf:'<path d="M5 19C5 10 10 5 20 4c0 10-5 15-14 15zM5 19l8-8"/>',fork:'<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 2-2 6 0 8v10"/>',snack:'<circle cx="12" cy="12" r="8"/><path d="M9 9h.01M14 10h.01M10 15h.01M15 15h.01"/>',grid:'<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/>'};
+const P={copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',undo:'<path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',heart:'<path d="M12 20.5C5 16 3 12.5 3 9.5a4.500 4.500 0 0 1 9-2 4.500 4.500 0 0 1 9 2c0 3-2 6.500-9 11z"/>',list:'<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>',plus:'<path d="M12 5v14M5 12h14"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',back:'<path d="M15 5l-7 7 7 7"/>',chev:'<path d="M6 9l6 6 6-6"/>',dl:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',bowl:'<path d="M3 11h18a9 9 0 0 1-18 0zM8 5c0 2 2 2 2 4M13 4c0 2 2 2 2 5"/>',cup:'<path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2 2 0 0 1 0 4h-2"/>',cake:'<path d="M4 20h16v-6H4zM7 14V9h10v5M12 9V5"/>',leaf:'<path d="M5 19C5 10 10 5 20 4c0 10-5 15-14 15zM5 19l8-8"/>',fork:'<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 2-2 6 0 8v10"/>',snack:'<circle cx="12" cy="12" r="8"/><path d="M9 9h.01M14 10h.01M10 15h.01M15 15h.01"/>',grid:'<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/>'};
 const ic=(n,f)=>`<svg class="ic" viewBox="0 0 24 24" fill="${f?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
 const catIc=c=>{c=c.toLowerCase();return /frühst|getr|drink/.test(c)?'cup':/dessert|kuchen|back|süß/.test(c)?'cake':/salat/.test(c)?'leaf':/snack/.test(c)?'snack':/haupt|mittag|abend|lunch|dinner/.test(c)?'fork':'bowl'};
 const tn=r=>'t'+([...r.title].reduce((a,c)=>a+c.charCodeAt(0),0)%3);
@@ -297,7 +309,7 @@ document.addEventListener('click',e=>{
   else if(a==='clrall'){SL=[];save()}
   else if(a==='del'){return ask('Dieses Rezept wirklich löschen?','Löschen',()=>{R=R.filter(x=>x.id!==S.id);delete IMG[S.id];save();S.v='home';S.id=null;render();toast('Gelöscht')})}
   else if(a==='md'){modal(r.title,r.md,{ok:'Änderungen speichern',hint:'Du kannst das Rezept hier direkt als Markdown bearbeiten.',dl:r.title.replace(/[^\wäöüß-]+/g,'_')+'.md',onok:(v,close)=>{R.find(x=>x.id===S.id).md=build(parse(v));save();close();render();toast('Gespeichert')}});return}
-  else if(a==='imp'){return mdImport('')}else if(a==='mdnew'){return mdImport()}else if(a==='exp'){return exportAll()}else if(a==='cpp'){return copy(PROMPT)}else if(a==='upd'){return upd()}else if(/^th[a-z]+$/.test(a)){return themeAct(a,t)}else if(a==='rmimg'){S.pimgs=S.pimgs!==undefined?S.pimgs:[...imgs(S.id)];S.pimgs.splice(+t.dataset.i,1);$('#imgp').innerHTML=thumbs();return}else if(a==='gal'){return openGal(S.id)}
+  else if(a==='imp'){return mdImport('')}else if(a==='mdnew'){return mdImport()}else if(a==='exp'){return exportAll()}else if(a==='cpp'){return copy(PROMPT)}else if(a==='upd'){return upd()}else if(a==='cpick'){return colorPicker(t.dataset.k,t.dataset.l)}else if(/^th[a-z]+$/.test(a)){return themeAct(a,t)}else if(a==='rmimg'){S.pimgs=S.pimgs!==undefined?S.pimgs:[...imgs(S.id)];S.pimgs.splice(+t.dataset.i,1);$('#imgp').innerHTML=thumbs();return}else if(a==='gal'){return openGal(S.id)}
   else if(a==='save'){
     const g=i=>$('#'+i).value.trim(),title=g('f-t');if(!title){toast('Bitte einen Titel eingeben');return}
     const lines=v=>v.split('\n').map(x=>x.replace(/^\s*([-*]|\d+[.)])\s+/,'').trim()).filter(Boolean);
@@ -394,12 +406,50 @@ function themeAct(a,t){
   else if(a==='thimp'){return modal('Theme importieren','',{import:true,ok:'Importieren',hint:'Füge ein Theme als Markdown ein oder wähle .md-Dateien aus. Mehrere Themes trennst du mit &lt;!-- theme --&gt;.',onok:(v,close)=>{const L=v.split(/\n?<!--\s*[\w-]+\s*-->\n?/).map(parseTheme).filter(Boolean);if(!L.length)return toast('Kein Theme erkannt');L.forEach(p=>{const ex=THS.find(x=>x.name.toLowerCase()===p.name.toLowerCase());if(ex){ex.v=p.v;TA=ex.id}else{const th={id:'c'+uid(),...p};THS.push(th);TA=th.id}});S.dr=null;saveTh();applyTheme();close();render();toast(L.length+' Theme(s) importiert')}})}
   render()}
 document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k){S.dr={...curV()};S.dr[k]=e.target.value;applyTheme();if(e.target.nextElementSibling)e.target.nextElementSibling.textContent=e.target.value}else if(e.target.id==='th-n')S.dn=e.target.value});
+const hsv2rgb=(h,s,v)=>{const f=n=>{const k=(n+h/60)%6;return v-v*s*Math.max(0,Math.min(k,4-k,1))};return[f(5),f(3),f(1)].map(x=>Math.round(x*255))};
+const rgb2hex=a=>'#'+a.map(x=>x.toString(16).padStart(2,'0')).join('');
+const hex2rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const rgb2hsv=([r,g,b])=>{r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let h=0;if(d){h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;h=(h*60+360)%360}return{h,s:mx?d/mx:0,v:mx}};
+const hsv2hsl=(h,s,v)=>{const l=v*(1-s/2),sl=(l===0||l===1)?0:(v-l)/Math.min(l,1-l);return[Math.round(h),Math.round(sl*100),Math.round(l*100)]};
+const hsl2hsv=(h,s,l)=>{s/=100;l/=100;const v=l+s*Math.min(l,1-l);return{h,s:v?2*(1-l/v):0,v}};
+function setThemeColor(k,hx){S.dr={...curV()};S.dr[k]=hx;applyTheme();const b=document.querySelector('.csw[data-k="'+k+'"]');if(b){b.style.background=hx;if(b.nextElementSibling)b.nextElementSibling.textContent=hx}}
+function colorPicker(k,label){
+  const start=curV()[k];let c=rgb2hsv(hex2rgb(start)),now=start;
+  const RC=['#3b6fe8','#e8398d','#33e8b0','#f0c030','#55e830','#7b3fe8'],rc=[...new Set([...st.get('kb_rc',[]),...RC])].slice(0,6);
+  const d=document.createElement('div');d.className='ov cpo';
+  d.innerHTML=`<div class="md cp" role="dialog" aria-label="Farbe wählen: ${esc(label)}"><div class="top" style="margin:0"><b>${esc(label)}</b><button class="round" id="cx" aria-label="Schließen">×</button></div>
+  <div class="wh" id="wh"><canvas id="wc" width="220" height="220"></canvas><i id="mk"></i></div>
+  <div class="hx"><button class="sqb" id="cc" aria-label="Farbwert kopieren">${ic('copy')}</button><span>#</span><input class="in" id="chex" maxlength="6" autocomplete="off" spellcheck="false" aria-label="Hex-Farbwert"><button class="sqb" id="cu" aria-label="Zurücksetzen">${ic('undo')}</button></div>
+  <input type="range" class="cpr" id="cv" min="0" max="100" aria-label="Helligkeit">
+  <div class="hsl"><label><input id="ch" type="number" min="0" max="360" aria-label="Farbton">H</label><label><input id="cs" type="number" min="0" max="100" aria-label="Sättigung">S</label><label><input id="cl" type="number" min="0" max="100" aria-label="Helligkeit HSL">L</label></div>
+  <h2 style="margin:16px 0 0;font-size:.95rem">Zuletzt verwendet</h2><div class="rcs">${rc.map(h=>`<button data-c="${h}" style="background:${h}" aria-label="${h}"></button>`).join('')}</div></div>`;
+  document.body.appendChild(d);const q=x=>d.querySelector(x);
+  const cv=q('#wc'),ctx=cv.getContext('2d'),im=ctx.createImageData(220,220),R=110;
+  for(let y=0;y<220;y++)for(let x=0;x<220;x++){const dx=x+.5-R,dy=y+.5-R,r=Math.hypot(dx,dy);if(r>R)continue;const rgb=hsv2rgb((Math.atan2(dy,dx)*180/Math.PI+360)%360,r/R,1),i=(y*220+x)*4;im.data[i]=rgb[0];im.data[i+1]=rgb[1];im.data[i+2]=rgb[2];im.data[i+3]=Math.min(255,(R-r)*255)}
+  ctx.putImageData(im,0,0);
+  const sync=(skip,init)=>{const hx=rgb2hex(hsv2rgb(c.h,c.s,c.v)),mk=q('#mk');mk.style.left=(50+50*c.s*Math.cos(c.h*Math.PI/180))+'%';mk.style.top=(50+50*c.s*Math.sin(c.h*Math.PI/180))+'%';mk.style.background=hx;
+    const sl=q('#cv');sl.value=Math.round(c.v*100);sl.style.background='linear-gradient(90deg,#000,'+rgb2hex(hsv2rgb(c.h,c.s,1))+')';
+    if(skip!=='hex')q('#chex').value=hx.slice(1);
+    if(skip!=='hsl'){const[H,S2,L]=hsv2hsl(c.h,c.s,c.v);q('#ch').value=H;q('#cs').value=S2;q('#cl').value=L}
+    now=hx;if(!init)setThemeColor(k,hx)};
+  const wh=q('#wh');let drag=false;
+  const pt=e=>{const b=wh.getBoundingClientRect(),dx=e.clientX-b.left-b.width/2,dy=e.clientY-b.top-b.height/2;c.h=(Math.atan2(dy,dx)*180/Math.PI+360)%360;c.s=Math.min(1,Math.hypot(dx,dy)/(b.width/2));sync()};
+  wh.onpointerdown=e=>{drag=true;try{wh.setPointerCapture(e.pointerId)}catch(x){}pt(e)};wh.onpointermove=e=>{if(drag)pt(e)};wh.onpointerup=wh.onpointercancel=()=>{drag=false};
+  q('#cv').oninput=e=>{c.v=e.target.value/100;sync()};
+  q('#chex').oninput=e=>{const h=hex(e.target.value);if(h&&e.target.value.replace('#','').length>=3){c=rgb2hsv(hex2rgb(h));sync('hex')}};
+  const hs=()=>{const n=(id,m)=>Math.max(0,Math.min(m,+q(id).value||0));c=hsl2hsv(n('#ch',360),n('#cs',100),n('#cl',100));sync('hsl')};
+  ['#ch','#cs','#cl'].forEach(id=>q(id).oninput=hs);
+  q('#cc').onclick=()=>copy(now);q('#cu').onclick=()=>{c=rgb2hsv(hex2rgb(start));sync()};
+  d.querySelectorAll('.rcs button').forEach(b=>b.onclick=()=>{c=rgb2hsv(hex2rgb(b.dataset.c));sync()});
+  const close=()=>{if(now!==start)st.set('kb_rc',[now,...st.get('kb_rc',[]).filter(x=>x!==now)].slice(0,6));d.remove()};
+  q('#cx').onclick=close;d.onclick=e=>{if(e.target===d)close()};
+  sync(null,true)}
 function themeUI(){
   const cu=THS.some(x=>x.id===TA),v=curV(),dirty=!!S.dr;
   return`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Themes</h2>${allTh().map(t=>`<div class="thr ${t.id===TA?'on':''}"><button class="thb" data-a="thsel" data-id="${t.id}"><span class="sws">${['bg','app','lime','ink'].map(k=>`<i style="background:${t.v[k]}"></i>`).join('')}</span><span>${esc(t.name)}</span>${t.id===TA&&!dirty?'<small>aktiv</small>':''}</button>${THS.includes(t)?`<button class="thx" data-a="thdel" data-id="${t.id}" aria-label="Theme ${esc(t.name)} löschen">×</button>`:''}</div>`).join('')}
   <div class="row" style="margin-top:6px"><button class="btn alt" data-a="thdef">Standard-Theme</button><button class="btn alt" data-a="thimp">Importieren</button><button class="btn alt" data-a="thexpall">Eigene exportieren</button></div></div></div>
   <div class="acc"><div class="ab" style="padding-top:16px"><h2>Farben anpassen</h2><p class="mut" style="margin-top:0">Änderungen siehst du sofort. Speichere sie als eigenes Theme, damit sie erhalten bleiben.</p>
-  ${THV.map(([k,l])=>`<label class="cr"><span>${l}</span><input type="color" data-k="${k}" value="${v[k]}" aria-label="${l}"><code>${v[k]}</code></label>`).join('')}
+  ${THV.map(([k,l])=>`<div class="cr"><span>${l}</span><button class="csw" data-a="cpick" data-k="${k}" data-l="${esc(l)}" style="background:${v[k]}" aria-label="${esc(l)} ändern"></button><code>${v[k]}</code></div>`).join('')}
   <label class="f" for="th-n">Name</label><input class="in" id="th-n" value="${esc(S.dn||'')}" placeholder="${cu?esc(actTh().name):'Mein Theme'}">
   <div class="row" style="margin-top:12px"><button class="btn lime" data-a="thsave">Als neues Theme speichern</button>${cu?'<button class="btn alt" data-a="thupd">Theme aktualisieren</button>':''}<button class="btn alt" data-a="thexp">Als Markdown exportieren</button>${dirty?'<button class="btn alt" data-a="threset">Verwerfen</button>':''}</div></div></div>`}
 function settings(){
@@ -409,7 +459,7 @@ function settings(){
   <div class="acc"><div class="ab" style="padding-top:16px"><h2>Dein Name</h2><input class="in" id="s-n" aria-label="Name" value="${esc(n)}" placeholder="Name für die Begrüßung"></div></div>
   <div class="acc"><div class="ab" style="padding-top:16px"><h2>Rezepte</h2><div class="row"><button class="btn alt" data-a="mdnew">Aus Markdown erstellen</button><button class="btn alt" data-a="imp">Importieren</button><button class="btn alt" data-a="exp">Alle exportieren</button></div></div></div>
   <div class="acc"><div class="ab" style="padding-top:16px"><h2>Prompt für perfektes Markdown</h2><p class="mut" style="margin-top:0">Schicke diesen Prompt nach dem Erstellen eines Rezepts an Claude. Die Antwort fügst du über „Aus Markdown erstellen“ ein.</p><textarea readonly rows="10" aria-label="Prompt" style="font-size:.85rem">${esc(PROMPT)}</textarea><button class="btn lime" data-a="cpp" style="margin-top:10px">Prompt kopieren</button></div></div>
-  <p class="mut" style="text-align:center;margin:18px 0 0">Version 5 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
+  <p class="mut" style="text-align:center;margin:18px 0 0">Version 6 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
 document.addEventListener('keydown',e=>{if(S.v!=='cook')return;if(e.key==='ArrowRight')document.querySelector('[data-a=next]').click();if(e.key==='ArrowLeft')document.querySelector('[data-a=prev]').click();if(e.key==='Escape')document.querySelector('[data-a=endcook]').click()});
 /* Zurück-Taste: App-Navigation mit dem Browser-Verlauf synchron halten */
 let CUR=0;
