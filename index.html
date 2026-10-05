@@ -493,15 +493,16 @@ function settings(){
   ${T==='design'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Dein Name</h2><input class="in" id="s-n" aria-label="Name" value="${esc(n)}" placeholder="Name für die Begrüßung"></div></div>`:''}
   ${T==='rez'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Rezepte</h2><div class="row"><button class="btn alt" data-a="mdnew">Aus Markdown erstellen</button><button class="btn alt" data-a="imp">Importieren</button><button class="btn alt" data-a="exp">Alle exportieren</button></div></div></div>`:''}
   ${T==='prompt'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Prompt für perfektes Markdown</h2><p class="mut" style="margin-top:0">Schicke diesen Prompt nach dem Erstellen eines Rezepts an Claude. Die Antwort fügst du über „Aus Markdown erstellen“ ein.</p><textarea readonly rows="10" aria-label="Prompt" style="font-size:.85rem">${esc(PROMPT)}</textarea><button class="btn lime" data-a="cpp" style="margin-top:10px">Prompt kopieren</button></div></div>`:''}
-  <p class="mut" style="text-align:center;margin:18px 0 0">Version 12 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
+  <p class="mut" style="text-align:center;margin:18px 0 0">Version 13 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
 document.addEventListener('keydown',e=>{if(S.v!=='cook')return;if(e.key==='ArrowRight')document.querySelector('[data-a=next]').click();if(e.key==='ArrowLeft')document.querySelector('[data-a=prev]').click();if(e.key==='Escape')document.querySelector('[data-a=endcook]').click()});
 /* Zurück-Taste: App-Navigation mit dem Browser-Verlauf synchron halten */
 let CUR=0,RK,RT=-1,RS=0,RL=0;
 function swipe(pg,oc,dir){const w=pg.parentElement;if(!oc||!w||!pg.animate||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   const o={duration:300,easing:'cubic-bezier(.22,.8,.3,1)'};oc.classList.add('pg-old');w.appendChild(oc);w.classList.add('swiping');
-  oc.animate([{transform:'translateX(0)'},{transform:'translateX('+(-dir*100)+'%)'}],{...o,fill:'forwards'});
-  const a=pg.animate([{transform:'translateX('+(dir*100)+'%)'},{transform:'translateX(0)'}],o);
-  const done=()=>{oc.remove();w.classList.remove('swiping')};a.onfinish=done;a.oncancel=done}
+  const off=d=>'translateX(calc('+d*100+'% + '+d*24+'px))';
+  const oa=oc.animate([{transform:'translateX(0)'},{transform:off(-dir)}],{...o,fill:'forwards'});
+  const a=pg.animate([{transform:off(dir)},{transform:'translateX(0)'}],o);
+  const done=()=>{oc.remove();w.classList.remove('swiping')};a.onfinish=done;a.oncancel=done;oa.oncancel=done;setTimeout(done,450)}
 const level=()=>S.v==='home'?0:S.v==='cook'?2:S.v==='form'?(S.id?2:1):1;
 const ovs=()=>document.querySelectorAll('.ov,.car');
 function reconcile(){const want=level()+ovs().length;if(want===CUR)return;try{if(want>CUR){for(let i=CUR+1;i<=want;i++)history.pushState({d:i},'')}else history.go(want-CUR)}catch(e){}CUR=want}
