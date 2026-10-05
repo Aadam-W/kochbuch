@@ -311,17 +311,16 @@ function form(){
   <div class="dz" id="dz"><div class="dzi"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="43" cy="21" r="6.5" style="fill:var(--lime)" stroke="var(--limeink)" stroke-opacity=".35" stroke-width="1.5"/><path d="M8 50l18-24 12 15 6-8 12 17z" style="fill:var(--lime)" stroke="var(--limeink)" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round"/></svg></div><b>Fotos deines Gerichts hinzufügen</b><span class="mut">Ziehen und ablegen oder vom Gerät auswählen</span><button type="button" class="btn lime" data-a="pickimg">Bilder auswählen</button><input type="file" id="f-img" accept="image/*" multiple hidden></div>
   <small class="mut" id="imgc" style="display:block;margin-top:8px">${imgCount()}</small><div class="thg" id="imgp">${thumbs()}</div><div class="row" style="margin-top:18px"><button class="btn lime" data-a="save">Rezept speichern</button><button class="btn alt" data-a="back">Abbrechen</button></div></div>`}
 function shop(){
-  return`<div class="wrap"><h1>Einkaufsliste</h1>${SL.length?`<ul class="sl" style="list-style:none;padding:0">${SL.map((x,i)=>`<li><label style="display:flex;gap:10px;flex:1;cursor:pointer"><input type="checkbox" data-a="chk" data-i="${i}" ${x.d?'checked':''}><span style="${x.d?'text-decoration:line-through;color:var(--mut)':''}">${inl(x.t)}</span></label></li>`).join('')}</ul><div class="row" style="margin-top:14px"><button class="btn alt" data-a="clrdone">Erledigte entfernen</button><button class="btn alt" data-a="clrall">Alles leeren</button></div>`:'<div class="empty">Die Liste ist leer. Füge Zutaten über ein Rezept hinzu.</div>'}</div>${nav()}`}
+  return`<div class="wrap"><h1>Einkaufsliste</h1>${SL.length?`<ul class="sl" style="list-style:none;padding:0">${SL.map((x,i)=>`<li><label style="display:flex;gap:10px;flex:1;cursor:pointer"><input type="checkbox" data-a="chk" data-i="${i}" ${x.d?'checked':''}><span style="${x.d?'text-decoration:line-through;color:var(--mut)':''}">${x.n>1?`<b>${x.n} ×</b> `:''}${inl(x.t)}</span></label></li>`).join('')}</ul><div class="row" style="margin-top:14px"><button class="btn alt" data-a="clrdone">Erledigte entfernen</button><button class="btn alt" data-a="clrall">Alles leeren</button></div>`:'<div class="empty">Die Liste ist leer. Füge Zutaten über ein Rezept hinzu.</div>'}</div>${nav()}`}
 
 function render(){if(S.v!=='settings'&&S.dr){S.dr=null;S.dn='';applyTheme()}
-  const oldPg=$('#app .pg'),oc=oldPg?oldPg.cloneNode(true):null;
+  const y0=window.scrollY,oldPg=$('#app .pg'),oc=oldPg?oldPg.cloneNode(true):null;
   $('#app').innerHTML=({home,detail,cook,form,shop,settings})[S.v]();
   const wr=$('#app').firstElementChild;let pg=null;if(wr&&wr.classList.contains('wrap')){pg=document.createElement('div');pg.className='pg';while(wr.firstChild)pg.appendChild(wr.firstChild);wr.appendChild(pg)}
   if(S.v==='home'){list();$('#q').addEventListener('input',e=>{S.q=e.target.value;list()})}
-  if(S.v!=='cook')window.scrollTo(0,0);
   const key=S.v+(S.v==='home'&&S.favs?'f':''),tn_=S.v==='home'?(S.favs?1:0):S.v==='shop'?2:S.v==='settings'?3:-1,sn=S.v==='settings'?['design','rez','prompt'].indexOf(S.st||'design'):0,lv=level();
   if(RK!==undefined&&key!==RK&&pg&&oc){const dir=(tn_>=0&&RT>=0)?(tn_!==RT?(tn_>RT?1:-1):(sn>=RS?1:-1)):(lv<RL?-1:1);swipe(pg,oc,dir)}
-  RK=key;RT=tn_;RS=sn;RL=lv;
+  const same=key===RK;RK=key;RT=tn_;RS=sn;RL=lv;if(S.v!=='cook')window.scrollTo(0,same?y0:0);
   reconcile();
 }
 
@@ -358,8 +357,8 @@ document.addEventListener('click',e=>{
   else if(a==='endcook'){S.v='detail'}
   else if(a==='prev'){S.step=Math.max(0,S.step-1)}
   else if(a==='next'){if(S.step>=r.steps.length-1)S.v='detail';else S.step++}
-  else if(a==='toshop'){const f=r.serv?S.serv/r.serv:1;r.ing.forEach(i=>SL.push({t:sc(i,f),d:false}));save();toast('Zur Einkaufsliste hinzugefügt');return nav2()}
-  else if(a==='chk'){SL[+t.dataset.i].d=t.checked;save()}
+  else if(a==='toshop'){const f=r.serv?S.serv/r.serv:1;addShop(r.ing.map(i=>sc(i,f)));toast('Zur Einkaufsliste hinzugefügt');return}
+  else if(a==='chk'){SL[+t.dataset.i].d=t.checked;save();const sp=t.nextElementSibling;if(sp){sp.style.textDecoration=t.checked?'line-through':'';sp.style.color=t.checked?'var(--mut)':''}return}
   else if(a==='clrdone'){SL=SL.filter(x=>!x.d);save()}
   else if(a==='clrall'){SL=[];save()}
   else if(a==='del'){return ask('Dieses Rezept wirklich löschen?','Löschen',()=>{R=R.filter(x=>x.id!==S.id);delete IMG[S.id];save();S.v='home';S.id=null;render();toast('Gelöscht')})}
@@ -374,6 +373,8 @@ document.addEventListener('click',e=>{
   render();
 });
 function nav2(){}
+const nk=t=>t.trim().toLowerCase().replace(/\s+/g,' ');
+function addShop(lines){lines.forEach(t=>{const e=SL.find(x=>!x.d&&nk(x.t)===nk(t));if(e)e.n=(e.n||1)+1;else SL.push({t,n:1,d:false})});save()}
 async function upd(){toast('Suche nach Updates …');try{for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();for(const k of await caches.keys())await caches.delete(k)}catch(e){}setTimeout(()=>location.reload(),500)}
 function copy(v){const fb=()=>{const t=document.createElement('textarea');t.value=v;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}t.remove();toast(ok?'Kopiert':'Bitte Text markieren und kopieren')};try{navigator.clipboard.writeText(v).then(()=>toast('Kopiert'),fb)}catch(e){fb()}}
 function ask(msg,ok,fn){const d=document.createElement('div');d.className='ov';d.innerHTML=`<div class="md" role="alertdialog" aria-label="${esc(msg)}"><h2>${esc(msg)}</h2><div class="row"><button class="btn" id="ay">${esc(ok)}</button><button class="btn alt" id="an">Abbrechen</button></div></div>`;document.body.appendChild(d);d.querySelector('#an').onclick=()=>d.remove();d.querySelector('#ay').onclick=()=>{d.remove();fn()};d.onclick=e=>{if(e.target===d)d.remove()}}
@@ -520,7 +521,7 @@ function settings(){
   ${T==='design'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Dein Name</h2><input class="in" id="s-n" aria-label="Name" value="${esc(n)}" placeholder="Name für die Begrüßung"></div></div>`:''}
   ${T==='rez'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Rezepte</h2><div class="row"><button class="btn alt" data-a="mdnew">Aus Markdown erstellen</button><button class="btn alt" data-a="imp">Importieren</button><button class="btn alt" data-a="exp">Alle exportieren</button></div></div></div>`:''}
   ${T==='prompt'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Prompt für perfektes Markdown</h2><p class="mut" style="margin-top:0">Schicke diesen Prompt nach dem Erstellen eines Rezepts an Claude. Die Antwort fügst du über „Aus Markdown erstellen“ ein.</p><textarea readonly rows="10" aria-label="Prompt" style="font-size:.85rem">${esc(PROMPT)}</textarea><button class="btn lime" data-a="cpp" style="margin-top:10px">Prompt kopieren</button></div></div>`:''}
-  <p class="mut" style="text-align:center;margin:18px 0 0">Version 19 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
+  <p class="mut" style="text-align:center;margin:18px 0 0">Version 20 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
 document.addEventListener('keydown',e=>{if(S.v!=='cook')return;if(e.key==='ArrowRight')document.querySelector('[data-a=next]').click();if(e.key==='ArrowLeft')document.querySelector('[data-a=prev]').click();if(e.key==='Escape')document.querySelector('[data-a=endcook]').click()});
 /* Zurück-Taste: App-Navigation mit dem Browser-Verlauf synchron halten */
 let CUR=0,RK,RT=-1,RS=0,RL=0;
@@ -556,7 +557,7 @@ function cardMenu(c){
     const a=bt.dataset.m,id=r.id;close();
     if(a==='fav'){const p=parse(r.md);p.fav=!p.fav;R.find(x=>x.id===id).md=build(p);save();if(S.v==='home')list();toast(p.fav?'Zu Favoriten hinzugefügt':'Aus Favoriten entfernt')}
     else if(a==='cook'){if(!r.steps.length)return toast('Dieses Rezept hat noch keine Schritte');S.id=id;S.serv=r.serv;S.step=0;S.v='cook';render()}
-    else if(a==='shop'){if(!r.ing.length)return toast('Dieses Rezept hat keine Zutaten');r.ing.forEach(i=>SL.push({t:i,d:false}));save();toast('Zur Einkaufsliste hinzugefügt')}
+    else if(a==='shop'){if(!r.ing.length)return toast('Dieses Rezept hat keine Zutaten');addShop(r.ing);toast('Zur Einkaufsliste hinzugefügt')}
     else if(a==='edit'){S.id=id;S.pimgs=undefined;S.v='form';render()}
     else ask('Dieses Rezept wirklich löschen?','Löschen',()=>{R=R.filter(x=>x.id!==id);delete IMG[id];save();const y=scrollY;render();scrollTo(0,y);toast('Gelöscht')})};
   const f=d.querySelector('button');if(f&&!('ontouchstart' in window))f.focus()}
