@@ -50,7 +50,7 @@ label.f{display:block;margin:12px 0 4px;font-weight:600;font-size:.9rem}
 .sl li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
 @media(prefers-reduced-motion:no-preference){.rc{transition:transform .15s}.rc:hover{transform:translateY(-2px)}}
 
-:root{--bg:#dcdce6;--app:#f6f6f3;--card:#ffffff;--ink:var(--limeink);--mut:#78786f;--line:#d3d3c8;--lime:#d9e6a3;--limeink:var(--limeink);--red:#e5483f;--t0:#ecd9bf;--t1:#dde8b8;--t2:#ecc9b6;--shade:#000000;--onshade:#ffffff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--bg:#dcdce6;--app:#f6f6f3;--card:#ffffff;--ink:var(--limeink);--mut:#78786f;--line:#d3d3c8;--lime:#d9e6a3;--limeink:var(--limeink);--red:#e5483f;--t0:#ecd9bf;--t1:#dde8b8;--t2:#ecc9b6;--shade:#000000;--onshade:#ffffff;--nav:#1c1c1a;--navink:#f6f6f3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 .wrap{max-width:480px;margin:20px auto 100px;padding:20px 18px 24px;background:var(--app);border-radius:30px}
 @media(max-width:520px){.wrap{margin:0 0 90px;border-radius:0 0 30px 30px}}
 h1{font-size:1.9rem;line-height:1.15;font-weight:700;margin:22px 0 18px;letter-spacing:-.015em}
@@ -67,8 +67,8 @@ h1{font-size:1.9rem;line-height:1.15;font-weight:700;margin:22px 0 18px;letter-s
 .t0{background:var(--t0)}.t1{background:var(--t1)}.t2{background:var(--t2)}.pl{width:62%;max-height:100%;color:var(--ink)}
 .heart{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:var(--card);display:grid;place-items:center;color:var(--red)}.heart .ic{width:15px;height:15px}
 .rc .t{padding:10px 12px 12px}.rc b{display:block;font-weight:600;line-height:1.25}.rc small{color:var(--mut)}
-.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));background:var(--ink);border-radius:99px;padding:6px;display:flex;gap:4px;z-index:5}
-.nav button{width:46px;height:46px;border-radius:50%;color:var(--app);display:grid;place-items:center;opacity:.85}.nav button.on{background:var(--lime);color:var(--limeink);opacity:1}
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));background:var(--nav);border-radius:99px;padding:6px;display:flex;gap:4px;z-index:5}
+.nav button{width:46px;height:46px;border-radius:50%;color:var(--navink);display:grid;place-items:center;opacity:.85}.nav button.on{background:var(--lime);color:var(--limeink);opacity:1}
 .acc{background:var(--card);border:1px solid var(--line);border-radius:18px;margin-top:12px;overflow:hidden}
 .ah{display:flex;justify-content:space-between;align-items:center;width:100%;padding:16px}.ab{padding:0 16px 16px}
 .acc.dir.open{background:var(--lime);border-color:var(--lime);color:var(--limeink)}.acc.dir.open ol.st li:before{background:var(--limeink);color:var(--lime)}.acc.dir.open .mut{color:color-mix(in srgb,var(--limeink) 78%,var(--lime))}
@@ -301,7 +301,7 @@ function render(){if(S.v!=='settings'&&S.dr){S.dr=null;S.dn='';applyTheme()}
   const wr=$('#app').firstElementChild;let pg=null;if(wr&&wr.classList.contains('wrap')){pg=document.createElement('div');pg.className='pg';while(wr.firstChild)pg.appendChild(wr.firstChild);wr.appendChild(pg)}
   if(S.v==='home'){list();$('#q').addEventListener('input',e=>{S.q=e.target.value;list()})}
   if(S.v!=='cook')window.scrollTo(0,0);
-  const key=S.v+(S.v==='home'&&S.favs?'f':'')+(S.v==='settings'?(S.st||'design'):''),tn_=S.v==='home'?(S.favs?1:0):S.v==='shop'?2:S.v==='settings'?3:-1,sn=S.v==='settings'?['design','rez','prompt'].indexOf(S.st||'design'):0,lv=level();
+  const key=S.v+(S.v==='home'&&S.favs?'f':''),tn_=S.v==='home'?(S.favs?1:0):S.v==='shop'?2:S.v==='settings'?3:-1,sn=S.v==='settings'?['design','rez','prompt'].indexOf(S.st||'design'):0,lv=level();
   if(RK!==undefined&&key!==RK&&pg&&oc){const dir=(tn_>=0&&RT>=0)?(tn_!==RT?(tn_>RT?1:-1):(sn>=RS?1:-1)):(lv<RL?-1:1);swipe(pg,oc,dir)}
   RK=key;RT=tn_;RS=sn;RL=lv;
   reconcile();
@@ -419,17 +419,18 @@ Regeln:
 - Jeder Zubereitungsschritt ist ein eigener nummerierter Punkt mit ein bis zwei Sätzen.
 - Hervorhebungen nur mit **fett**. Keine Tabellen, keine Bilder, keine Emojis.
 - Lass den Abschnitt Notizen weg, wenn es keine gibt.`;
-const THV=[['bg','Seitenhintergrund'],['app','App-Fläche'],['card','Karten & Felder'],['ink','Text & dunkle Buttons'],['mut','Gedämpfter Text'],['line','Linien & Rahmen'],['lime','Akzentfarbe'],['limeink','Text auf Akzentfarbe'],['red','Herz / Favorit'],['t0','Bildplatzhalter 1'],['t1','Bildplatzhalter 2'],['t2','Bildplatzhalter 3'],['shade','Abdunklung hinter Dialogen'],['onshade','Text auf Abdunklung']];
-const LIGHT={bg:'#dcdce6',app:'#f6f6f3',card:'#ffffff',ink:'#1c1c1a',mut:'#78786f',line:'#d3d3c8',lime:'#d9e6a3',limeink:'#1c1c1a',red:'#e5483f',t0:'#ecd9bf',t1:'#dde8b8',t2:'#ecc9b6',shade:'#000000',onshade:'#ffffff'};
-const DARK={bg:'#0f0f10',app:'#1a1a18',card:'#242421',ink:'#f1f1e8',mut:'#9a9a90',line:'#33332e',lime:'#b9cc78',limeink:'#1c1c1a',red:'#e5483f',t0:'#4a3d2a',t1:'#3c4626',t2:'#4d3428',shade:'#000000',onshade:'#ffffff'};
+const THV=[['bg','Seitenhintergrund'],['app','App-Fläche'],['card','Karten & Felder'],['ink','Text & dunkle Buttons'],['mut','Gedämpfter Text'],['line','Linien & Rahmen'],['lime','Akzentfarbe'],['limeink','Text auf Akzentfarbe'],['red','Herz / Favorit'],['nav','Navigationsleiste: Hintergrund'],['navink','Navigationsleiste: Symbole'],['t0','Bildplatzhalter 1'],['t1','Bildplatzhalter 2'],['t2','Bildplatzhalter 3'],['shade','Abdunklung hinter Dialogen'],['onshade','Text auf Abdunklung']];
+const LIGHT={bg:'#dcdce6',app:'#f6f6f3',card:'#ffffff',ink:'#1c1c1a',mut:'#78786f',line:'#d3d3c8',lime:'#d9e6a3',limeink:'#1c1c1a',red:'#e5483f',t0:'#ecd9bf',t1:'#dde8b8',t2:'#ecc9b6',shade:'#000000',onshade:'#ffffff',nav:'#1c1c1a',navink:'#f6f6f3'};
+const DARK={bg:'#0f0f10',app:'#1a1a18',card:'#242421',ink:'#f1f1e8',mut:'#9a9a90',line:'#33332e',lime:'#b9cc78',limeink:'#1c1c1a',red:'#e5483f',t0:'#4a3d2a',t1:'#3c4626',t2:'#4d3428',shade:'#000000',onshade:'#ffffff',nav:'#f1f1e8',navink:'#1a1a18'};
 const BUILT=[{id:'light',name:'Standard',v:LIGHT},{id:'dark',name:'Dunkel',v:DARK}];
 let THS=st.get('kb_th',[]),TA=st.get('kb_ta',null)||st.get('kb_t','light');
-const allTh=()=>[...BUILT,...THS],actTh=()=>allTh().find(t=>t.id===TA)||BUILT[0],curV=()=>({...LIGHT,...(S.dr||actTh().v)});
+const fillNav=(o,b)=>{if(!b.nav)o.nav=o.ink;if(!b.navink)o.navink=o.app;return o};
+const allTh=()=>[...BUILT,...THS],actTh=()=>allTh().find(t=>t.id===TA)||BUILT[0],curV=()=>{const b=S.dr||actTh().v;return fillNav({...LIGHT,...b},b)};
 const lum=h=>{const n=parseInt(h.slice(1),16);return(.299*(n>>16)+.587*(n>>8&255)+.114*(n&255))/255};
 function applyTheme(){const v=curV(),r=document.documentElement.style;THV.forEach(([k])=>r.setProperty('--'+k,v[k]));r.colorScheme=lum(v.app)<.5?'dark':'light';const m=document.querySelector('meta[name=theme-color]');if(m)m.content=v.lime}
 const hex=s=>{const m=s.trim().match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i);if(!m)return null;let h=m[1];if(h.length===3)h=[...h].map(c=>c+c).join('');return'#'+h.toLowerCase()};
 const themeMd=(n,v)=>`---\ntheme: ${n}\n${THV.map(([k])=>k+': '+v[k]).join('\n')}\n---\n`;
-function parseTheme(t){t=clean(t);const m=t.match(/^---[ \t]*\r?\n([\s\S]*?)\r?\n---/),v={};let name='';(m?m[1]:t).split('\n').forEach(l=>{const x=l.match(/^[\s*_-]*([A-Za-z0-9ÄÖÜäöüß]+)[\s*_]*:[\s*_]*(.*?)[\s*_]*$/);if(!x)return;const k=x[1].toLowerCase(),val=x[2].replace(/^["']|["']$/g,'').trim();if(/^(theme|name|titel|title)$/.test(k))name=val;else if(LIGHT[k]!==undefined){const h=hex(val);if(h)v[k]=h}});return Object.keys(v).length?{name:name||'Importiertes Theme',v:{...LIGHT,...v}}:null}
+function parseTheme(t){t=clean(t);const m=t.match(/^---[ \t]*\r?\n([\s\S]*?)\r?\n---/),v={};let name='';(m?m[1]:t).split('\n').forEach(l=>{const x=l.match(/^[\s*_-]*([A-Za-z0-9ÄÖÜäöüß]+)[\s*_]*:[\s*_]*(.*?)[\s*_]*$/);if(!x)return;const k=x[1].toLowerCase(),val=x[2].replace(/^["']|["']$/g,'').trim();if(/^(theme|name|titel|title)$/.test(k))name=val;else if(LIGHT[k]!==undefined){const h=hex(val);if(h)v[k]=h}});return Object.keys(v).length?{name:name||'Importiertes Theme',v:fillNav({...LIGHT,...v},v)}:null}
 const saveTh=()=>{st.set('kb_th',THS);st.set('kb_ta',TA)};
 function themeAct(a,t){
   if(a==='thsel'){TA=t.dataset.id;S.dr=null;S.dn='';saveTh();applyTheme()}
@@ -497,7 +498,7 @@ function settings(){
   ${T==='design'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Dein Name</h2><input class="in" id="s-n" aria-label="Name" value="${esc(n)}" placeholder="Name für die Begrüßung"></div></div>`:''}
   ${T==='rez'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Rezepte</h2><div class="row"><button class="btn alt" data-a="mdnew">Aus Markdown erstellen</button><button class="btn alt" data-a="imp">Importieren</button><button class="btn alt" data-a="exp">Alle exportieren</button></div></div></div>`:''}
   ${T==='prompt'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Prompt für perfektes Markdown</h2><p class="mut" style="margin-top:0">Schicke diesen Prompt nach dem Erstellen eines Rezepts an Claude. Die Antwort fügst du über „Aus Markdown erstellen“ ein.</p><textarea readonly rows="10" aria-label="Prompt" style="font-size:.85rem">${esc(PROMPT)}</textarea><button class="btn lime" data-a="cpp" style="margin-top:10px">Prompt kopieren</button></div></div>`:''}
-  <p class="mut" style="text-align:center;margin:18px 0 0">Version 14 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
+  <p class="mut" style="text-align:center;margin:18px 0 0">Version 16 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
 document.addEventListener('keydown',e=>{if(S.v!=='cook')return;if(e.key==='ArrowRight')document.querySelector('[data-a=next]').click();if(e.key==='ArrowLeft')document.querySelector('[data-a=prev]').click();if(e.key==='Escape')document.querySelector('[data-a=endcook]').click()});
 /* Zurück-Taste: App-Navigation mit dem Browser-Verlauf synchron halten */
 let CUR=0,RK,RT=-1,RS=0,RL=0;
