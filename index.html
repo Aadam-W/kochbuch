@@ -117,10 +117,6 @@ body{overflow-wrap:anywhere}.wrap{overflow-x:clip}
 .cm button:hover,.cm button:focus-visible{background:var(--bg)}.cm .dg{color:var(--red)}
 @media(prefers-reduced-motion:no-preference){.cm{animation:cmin .12s ease-out}}@keyframes cmin{from{opacity:0;transform:scale(.96)}}
 @media(prefers-reduced-motion:no-preference){
-.v-r{animation:vr .3s cubic-bezier(.22,.8,.3,1)}.v-l{animation:vl .3s cubic-bezier(.22,.8,.3,1)}.v-u{animation:vu .28s ease-out}
-@keyframes vr{from{opacity:0;transform:translateX(32px)}}@keyframes vl{from{opacity:0;transform:translateX(-32px)}}@keyframes vu{from{opacity:0;transform:translateY(14px)}}
-.anim .grid .rc{animation:cin .38s cubic-bezier(.22,.8,.3,1) both;animation-delay:calc(var(--i,0)*35ms)}
-@keyframes cin{from{opacity:0;transform:translateY(16px) scale(.97)}}
 .cm{transform-origin:var(--ox,50%) var(--oy,0%);animation:cmin .24s cubic-bezier(.2,1.15,.3,1)}
 @keyframes cmin{from{opacity:0;transform:translateY(var(--ty,-8px)) scale(.86)}}
 @keyframes cmout{to{opacity:0;transform:scale(.92)}}
@@ -128,6 +124,7 @@ body{overflow-wrap:anywhere}.wrap{overflow-x:clip}
 .cmo{animation:bgin .2s ease-out}.cmo.out{animation:bgout .17s ease-in forwards}.cmo.out .cm{animation:cmout .17s ease-in forwards}
 .ov:not(.cmo){animation:bgin .16s ease-out}.ov:not(.cmo) .md{animation:cmin .22s cubic-bezier(.2,1.1,.3,1)}
 }
+.wrap{position:relative}.swiping{overflow:hidden}.pg-old{position:absolute;left:18px;right:18px;top:20px;pointer-events:none}
 </style>
 </head>
 <body>
@@ -282,7 +279,7 @@ function cook(){
 function form(){
   const r=S.id?all().find(x=>x.id===S.id):{title:'',cat:'',time:'',serv:'',ing:[],steps:[],notes:''};
   const cats=[...new Set(all().map(x=>x.cat))];
-  return`<div class="wrap" style="max-width:640px"><div class="top"><button class="round" data-a="back" aria-label="Zurück">←</button></div><h1>${S.id?'Rezept bearbeiten':'Neues Rezept'}</h1>${S.id?'':'<button class="btn alt" data-a="mdnew" style="margin-bottom:6px">Aus Markdown erstellen</button>'}
+  return`<div class="wrap"><div class="top"><button class="round" data-a="back" aria-label="Zurück">←</button></div><h1>${S.id?'Rezept bearbeiten':'Neues Rezept'}</h1>${S.id?'':'<button class="btn alt" data-a="mdnew" style="margin-bottom:6px">Aus Markdown erstellen</button>'}
   <label class="f" for="f-t">Titel</label><input class="in" id="f-t" value="${esc(r.title)}">
   <div class="cols"><div><label class="f" for="f-c">Kategorie</label><input class="in" id="f-c" list="cl" value="${esc(r.cat)}"><datalist id="cl">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></div>
   <div><label class="f" for="f-m">Zeit (Min.)</label><input class="in" id="f-m" inputmode="numeric" value="${esc(r.time)}"></div>
@@ -292,15 +289,17 @@ function form(){
   <label class="f" for="f-n">Notizen</label><textarea id="f-n" rows="3">${esc(r.notes)}</textarea>
   <label class="f">Bilder</label><div class="row" id="imgp">${thumbs()}</div><input type="file" id="f-img" accept="image/*" multiple style="margin-top:8px"><div class="row" style="margin-top:18px"><button class="btn lime" data-a="save">Rezept speichern</button><button class="btn alt" data-a="back">Abbrechen</button></div></div>`}
 function shop(){
-  return`<div class="wrap" style="max-width:640px"><h1>Einkaufsliste</h1>${SL.length?`<ul class="sl" style="list-style:none;padding:0">${SL.map((x,i)=>`<li><label style="display:flex;gap:10px;flex:1;cursor:pointer"><input type="checkbox" data-a="chk" data-i="${i}" ${x.d?'checked':''}><span style="${x.d?'text-decoration:line-through;color:var(--mut)':''}">${inl(x.t)}</span></label></li>`).join('')}</ul><div class="row" style="margin-top:14px"><button class="btn alt" data-a="clrdone">Erledigte entfernen</button><button class="btn alt" data-a="clrall">Alles leeren</button></div>`:'<div class="empty">Die Liste ist leer. Füge Zutaten über ein Rezept hinzu.</div>'}</div>${nav()}`}
+  return`<div class="wrap"><h1>Einkaufsliste</h1>${SL.length?`<ul class="sl" style="list-style:none;padding:0">${SL.map((x,i)=>`<li><label style="display:flex;gap:10px;flex:1;cursor:pointer"><input type="checkbox" data-a="chk" data-i="${i}" ${x.d?'checked':''}><span style="${x.d?'text-decoration:line-through;color:var(--mut)':''}">${inl(x.t)}</span></label></li>`).join('')}</ul><div class="row" style="margin-top:14px"><button class="btn alt" data-a="clrdone">Erledigte entfernen</button><button class="btn alt" data-a="clrall">Alles leeren</button></div>`:'<div class="empty">Die Liste ist leer. Füge Zutaten über ein Rezept hinzu.</div>'}</div>${nav()}`}
 
 function render(){if(S.v!=='settings'&&S.dr){S.dr=null;S.dn='';applyTheme()}
+  const oldPg=$('#app .pg'),oc=oldPg?oldPg.cloneNode(true):null;
   $('#app').innerHTML=({home,detail,cook,form,shop,settings})[S.v]();
+  const wr=$('#app').firstElementChild;let pg=null;if(wr&&wr.classList.contains('wrap')){pg=document.createElement('div');pg.className='pg';while(wr.firstChild)pg.appendChild(wr.firstChild);wr.appendChild(pg)}
   if(S.v==='home'){list();$('#q').addEventListener('input',e=>{S.q=e.target.value;list()})}
   if(S.v!=='cook')window.scrollTo(0,0);
-  const key=S.v+(S.v==='home'&&S.favs?'f':'')+(S.v==='settings'?(S.st||'design'):''),key2=key+(S.v==='home'?S.cat:''),el=$('#app').firstElementChild;
-  if(RK!==undefined&&el){const lv=level();if(key!==RK){const dir=lv>RL?'v-r':lv<RL?'v-l':'v-u';el.classList.add(dir,'anim');setTimeout(()=>el.classList.remove(dir,'anim'),900)}else if(key2!==RK2){el.classList.add('anim');setTimeout(()=>el.classList.remove('anim'),900)}}
-  RK=key;RK2=key2;RL=level();
+  const key=S.v+(S.v==='home'&&S.favs?'f':'')+(S.v==='settings'?(S.st||'design'):''),tn_=S.v==='home'?(S.favs?1:0):S.v==='shop'?2:S.v==='settings'?3:-1,sn=S.v==='settings'?['design','rez','prompt'].indexOf(S.st||'design'):0,lv=level();
+  if(RK!==undefined&&key!==RK&&pg&&oc){const dir=(tn_>=0&&RT>=0)?(tn_!==RT?(tn_>RT?1:-1):(sn>=RS?1:-1)):(lv<RL?-1:1);swipe(pg,oc,dir)}
+  RK=key;RT=tn_;RS=sn;RL=lv;
   reconcile();
 }
 
@@ -494,10 +493,15 @@ function settings(){
   ${T==='design'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Dein Name</h2><input class="in" id="s-n" aria-label="Name" value="${esc(n)}" placeholder="Name für die Begrüßung"></div></div>`:''}
   ${T==='rez'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Rezepte</h2><div class="row"><button class="btn alt" data-a="mdnew">Aus Markdown erstellen</button><button class="btn alt" data-a="imp">Importieren</button><button class="btn alt" data-a="exp">Alle exportieren</button></div></div></div>`:''}
   ${T==='prompt'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Prompt für perfektes Markdown</h2><p class="mut" style="margin-top:0">Schicke diesen Prompt nach dem Erstellen eines Rezepts an Claude. Die Antwort fügst du über „Aus Markdown erstellen“ ein.</p><textarea readonly rows="10" aria-label="Prompt" style="font-size:.85rem">${esc(PROMPT)}</textarea><button class="btn lime" data-a="cpp" style="margin-top:10px">Prompt kopieren</button></div></div>`:''}
-  <p class="mut" style="text-align:center;margin:18px 0 0">Version 11 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
+  <p class="mut" style="text-align:center;margin:18px 0 0">Version 12 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
 document.addEventListener('keydown',e=>{if(S.v!=='cook')return;if(e.key==='ArrowRight')document.querySelector('[data-a=next]').click();if(e.key==='ArrowLeft')document.querySelector('[data-a=prev]').click();if(e.key==='Escape')document.querySelector('[data-a=endcook]').click()});
 /* Zurück-Taste: App-Navigation mit dem Browser-Verlauf synchron halten */
-let CUR=0,RK,RK2,RL=0;
+let CUR=0,RK,RT=-1,RS=0,RL=0;
+function swipe(pg,oc,dir){const w=pg.parentElement;if(!oc||!w||!pg.animate||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const o={duration:300,easing:'cubic-bezier(.22,.8,.3,1)'};oc.classList.add('pg-old');w.appendChild(oc);w.classList.add('swiping');
+  oc.animate([{transform:'translateX(0)'},{transform:'translateX('+(-dir*100)+'%)'}],{...o,fill:'forwards'});
+  const a=pg.animate([{transform:'translateX('+(dir*100)+'%)'},{transform:'translateX(0)'}],o);
+  const done=()=>{oc.remove();w.classList.remove('swiping')};a.onfinish=done;a.oncancel=done}
 const level=()=>S.v==='home'?0:S.v==='cook'?2:S.v==='form'?(S.id?2:1):1;
 const ovs=()=>document.querySelectorAll('.ov,.car');
 function reconcile(){const want=level()+ovs().length;if(want===CUR)return;try{if(want>CUR){for(let i=CUR+1;i<=want;i++)history.pushState({d:i},'')}else history.go(want-CUR)}catch(e){}CUR=want}
