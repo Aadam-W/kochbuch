@@ -125,6 +125,10 @@ body{overflow-wrap:anywhere}.wrap{overflow-x:clip}
 .ov:not(.cmo){animation:bgin .16s ease-out}.ov:not(.cmo) .md{animation:cmin .22s cubic-bezier(.2,1.1,.3,1)}
 }
 .wrap{position:relative}.swiping{overflow:hidden}.pg-old{position:absolute;left:18px;right:18px;top:20px;pointer-events:none}
+button,.rc,.rc *{-webkit-tap-highlight-color:transparent}
+.rc,.rc *,.cmo,.cmo *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.rc ::selection,.rc::selection,.cmo ::selection{background:transparent}
+.rc img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 </style>
 </head>
 <body>
@@ -493,7 +497,7 @@ function settings(){
   ${T==='design'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Dein Name</h2><input class="in" id="s-n" aria-label="Name" value="${esc(n)}" placeholder="Name für die Begrüßung"></div></div>`:''}
   ${T==='rez'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Rezepte</h2><div class="row"><button class="btn alt" data-a="mdnew">Aus Markdown erstellen</button><button class="btn alt" data-a="imp">Importieren</button><button class="btn alt" data-a="exp">Alle exportieren</button></div></div></div>`:''}
   ${T==='prompt'?`<div class="acc"><div class="ab" style="padding-top:16px"><h2>Prompt für perfektes Markdown</h2><p class="mut" style="margin-top:0">Schicke diesen Prompt nach dem Erstellen eines Rezepts an Claude. Die Antwort fügst du über „Aus Markdown erstellen“ ein.</p><textarea readonly rows="10" aria-label="Prompt" style="font-size:.85rem">${esc(PROMPT)}</textarea><button class="btn lime" data-a="cpp" style="margin-top:10px">Prompt kopieren</button></div></div>`:''}
-  <p class="mut" style="text-align:center;margin:18px 0 0">Version 13 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
+  <p class="mut" style="text-align:center;margin:18px 0 0">Version 14 · <button class="mut" data-a="upd" style="text-decoration:underline">Nach Updates suchen</button></p></div>${nav()}`}
 document.addEventListener('keydown',e=>{if(S.v!=='cook')return;if(e.key==='ArrowRight')document.querySelector('[data-a=next]').click();if(e.key==='ArrowLeft')document.querySelector('[data-a=prev]').click();if(e.key==='Escape')document.querySelector('[data-a=endcook]').click()});
 /* Zurück-Taste: App-Navigation mit dem Browser-Verlauf synchron halten */
 let CUR=0,RK,RT=-1,RS=0,RL=0;
@@ -514,6 +518,7 @@ new MutationObserver(reconcile).observe(document.body,{childList:true});
 /* Lange drücken auf ein Rezept -> Kontextmenü */
 function cardMenu(c){
   if(document.querySelector('.cmo'))return;
+  try{getSelection().removeAllRanges()}catch(e){}
   const r=all().find(x=>x.id===c.dataset.id);if(!r)return;
   const d=document.createElement('div');d.className='ov cmo';const t0=Date.now();
   d.innerHTML=`<div class="cm" role="menu" aria-label="Aktionen für ${esc(r.title)}"><small>${esc(cut(r.title,32))}</small><button role="menuitem" data-m="fav">${ic('heart',r.fav)}<span>${r.fav?'Favorit entfernen':'Rezept favorisieren'}</span></button><button role="menuitem" data-m="cook">${ic('play')}<span>Kochen starten</span></button><button role="menuitem" data-m="edit">${ic('edit')}<span>Rezept bearbeiten</span></button><button role="menuitem" class="dg" data-m="del">${ic('trash')}<span>Rezept löschen</span></button></div>`;
